@@ -6,6 +6,7 @@
 #include <math.h>
 #include "codebarre.h"
 #include "pnm.h"
+#include "pnm.c"
 
 void check_is_ulg_code(FILE *filename){
   assert(filename != NULL);
@@ -81,6 +82,8 @@ int** fil_matrix_code(int nombre){
      }// fin for j
    }// fin for i
  // return de la matrix
+ fil_last_matrix_bloc(Matrix);
+ printMatrix(Matrix, DIMESION, DIMESION);
  return Matrix;
 }
 
@@ -93,11 +96,66 @@ void printMatrix(int **M, int m, int n){
   }
 }
 
+void fil_last_matrix_bloc(int **Matrix){
+  // assert
+
+  //filling last column
+  int sumLine=0, sumColumn=0;
+  for (int i = 0; i < DIMESION-10; i+=10) {
+    for (int j = 0; j < DIMESION-10; j+=10){
+      sumLine += Matrix[i][j];
+    }
+      printf("sumLine = %d a %d, %d \n", sumLine,i, DIMESION);
+      for (int k = i; k < DIMESION-10; k++){
+        for (int l = DIMESION-10; l < DIMESION; l++){
+          Matrix[k][l] = sumLine%2;
+          //Matrix[l][k] = sumColumn%2;
+        }
+    }
+    sumLine=0;
+    sumColumn =0;
+  }
+
+  // filling last line
+  for (int i = 0; i < DIMESION-10; i+=10) {
+    for (int j = 0; j < DIMESION-10; j+=10){
+      sumColumn += Matrix[j][i];
+    }
+      printf("sumLine = %d a %d, %d \n", sumLine,i, DIMESION);
+      for (int k = i; k < DIMESION-10; k++){
+        for (int l = DIMESION-10; l < DIMESION; l++){
+          Matrix[l][k] = sumColumn%2;
+        }
+    }
+    sumColumn =0;
+  }
+}
+
 PNM* create_PNM(int nombre){
   assert(nombre > 0);
 
-  return NULL;
+  PNM* codebarre = malloc(sizeof(PNM*));
+  if(codebarre == NULL)
+    return NULL;
+
+  set_nLines(codebarre, DIMESION);
+  set_nColumns(codebarre, DIMESION);
+  set_maxPix(codebarre, DIMESION);
+  set_MagicNumber(codebarre, P1);
+
+  set_Matrix(codebarre, fil_matrix_code(nombre));
+  return codebarre;
 }
+
+void fil_parity_matrix(int **Matrix, int i, int j, int value){
+  //assert
+  for(int k=i; k<i; k++){
+    for(int t= j; t<j; t++){
+      Matrix[k][t] = value;
+    }
+  }
+}
+
 void fil_bloc_matrix(int **Matrix, int i, int j, int value, int jump){
   //assert
   for(int k=i; k<jump+i; k++){

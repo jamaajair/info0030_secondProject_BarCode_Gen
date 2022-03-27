@@ -18,7 +18,8 @@ int main(int argc, char const *argv[]) {
   }
   int nbits = (int)(log(83)/log(2)) + 1;
   int *binaire = to_binary(83);
-  PNM* image = create_PNM(83);
+  PNM* image = create_PNM(87651234);
+  write_pnm(image, "jair.pbm");
   fclose(f);
   return 0;
 }

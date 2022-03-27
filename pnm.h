@@ -90,6 +90,15 @@ typedef struct PNM_t PNM;
  -----------------------------------------------------------------------------*/
  void set_nColumns(PNM *image,int nColumns);
  /**----------------------------------------------------------------------------
+  * \fn set_Matrix(PNM *image,int nColumns)
+  * \brief sert à stocker l'entier passé en arg dans la variable
+  *        nColumns de l'image PNM passé en agr
+  * \param une image PNM et un entier represente le nombre de colonnes
+  *
+  * \return -
+ -----------------------------------------------------------------------------*/
+ void set_Matrix(PNM* image, int** Matrix);
+ /**----------------------------------------------------------------------------
   * \fn set_maxPix(PNM* image, int maxPix)
   * \brief sert à stocker l'entier passé en arg dans la variable
   *        maxPix de l'image PNM passé en agr

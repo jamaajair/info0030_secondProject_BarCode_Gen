@@ -78,6 +78,10 @@ int** get_matrix(PNM* image){
   return image->Matrice;
 }
 
+void set_Matrix(PNM* image, int** Matrix){
+  image->Matrice = Matrix;
+}
+
 void free_matrix(PNM* image){
   assert(image != NULL);
   for (int j = 0; j < image->nLines; j++) {
