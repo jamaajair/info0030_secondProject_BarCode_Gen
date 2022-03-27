@@ -5,6 +5,7 @@
 #include <ctype.h>
 #include <math.h>
 #include "codebarre.h"
+#include "pnm.h"
 
 void check_is_ulg_code(FILE *filename){
   assert(filename != NULL);
@@ -38,9 +39,6 @@ int* to_binary(int nombre){
     return NULL;
   }
   change_to_base2(nombre, binaire, nbits);
-  for (size_t i = 0; i < nbits; i++) {
-    printf("%d ", binaire[i]);
-  }
   return binaire;
 }
 
@@ -52,23 +50,59 @@ int check_ulg_code(int code){
 int** fil_matrix_code(int nombre){
   assert(nombre > 0);
 
+  // transformer le nombre en code binaire
+  int nbits = (int)(log(nombre)/log(2)) + 1;
   int* binaire = to_binary(nombre);
-  // check succes of to_binary
-  int** Matrix = malloc(sizeof(int*)*70);
-  if(Matrix == NULL)
+  if (binaire == NULL) // binaire retourne NULL dans le cas d'un nombre
+    return NULL;      // qu'est au besoin de plus de 36 bits
+
+  // Allocation dynamique pour la matrice
+  int** Matrix = malloc(sizeof(int*) * DIMESION);
+  if(Matrix == NULL){
     free(binaire);
-  for (size_t i = 0; i < 70; i++) {
-    Matrix[i] = malloc(sizeof(int)*70);
+    return NULL;
+  }
+  for (int i = 0; i < DIMESION; i++) {
+    Matrix[i] = malloc(sizeof(int)*DIMESION);
     if(Matrix[i] == NULL){
       free(Matrix);
       free(binaire);
+      return NULL;
+    }
+  }//fin for i
+  //mettre 0 dans tous les colonnes de la matrice
+ fil_bloc_matrix(Matrix, 0, 0, 0, DIMESION);
+
+ // remplissage de la matrice sur la base du tableau binaire
+ for (int i = 0; i < DIMESION-10; i= i+10) {
+   for (int j = 0; j < DIMESION-10; j= j+10){
+     if((((DIMESION-10)/10)*(i/10) +(j/10))<nbits)
+         fil_bloc_matrix(Matrix, i, j, binaire[nbits-(((DIMESION-10)/10)*i/10 +j/10)-1], 10);
+     }// fin for j
+   }// fin for i
+ // return de la matrix
+ return Matrix;
+}
+
+void printMatrix(int **M, int m, int n){
+  for (size_t i = 0; i < m; i++) {
+    for (size_t j = 0; j < n; j++) {
+      printf("%d ",M[i][j] );
+    }
+    printf("\n");
+  }
+}
+
+PNM* create_PNM(int nombre){
+  assert(nombre > 0);
+
+  return NULL;
+}
+void fil_bloc_matrix(int **Matrix, int i, int j, int value, int jump){
+  //assert
+  for(int k=i; k<jump+i; k++){
+    for(int t= j; t<jump+j; t++){
+      Matrix[k][t] = value;
     }
   }
- // fil matrix
-  for (int i = 0; i < 70; i+10) {
-    for (int j = 0; j < 70; j+10) {
-
-    }
-  }
-
 }
