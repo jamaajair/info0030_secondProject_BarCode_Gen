@@ -7,9 +7,9 @@
 
 int* to_binary(int );
 
-void check_is_ulg_code(FILE *);
+int check_is_ulg_code(char *);
 
-int check_ulg_code(int );
+int check_file(char *);
 
 int** fil_matrix_code(int);
 

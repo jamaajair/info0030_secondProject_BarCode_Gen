@@ -8,14 +8,35 @@
 #include "pnm.h"
 #include "pnm.c"
 
-void check_is_ulg_code(FILE *filename){
-  assert(filename != NULL);
-
-  char c ;
-  fscanf(filename, "%c", &c);
-  if(isdigit(c) != 1){
-    fscanf(filename, "%*[^\n]\n");
+int check_is_ulg_code(char* matricule){
+  assert(matricule != NULL);
+  if(strlen(matricule) != 8)
+    return -1;
+  for (size_t i = 0; i < strlen(matricule); i++) {
+      if(matricule[i] =='0' || matricule[i] =='1' || matricule[i] =='2' || matricule[i] =='3' || matricule[i] =='4'
+         || matricule[i] == '5' || matricule[i] == '6' || matricule[i] == '7' || matricule[i] == '8' || matricule[i]=='9'){
+      return 1;
+      }
   }
+  return -1;
+}
+
+int check_file(char *file){
+  assert(file != NULL);
+
+  FILE *f = fopen(file,"r");
+  while(!feof(f)){
+    char* s = malloc(sizeof(char)*MAX_SIZE);
+    fscanf(f,"%s \n", s);
+
+    if(check_is_ulg_code(s) == -1){
+      printf("le fichier est mal formé!! \n");
+      fclose(f);
+      return -1;
+    }
+  }
+  fclose(f);
+  return 1;
 }
 
 void change_to_base2(int nombre, int* binaire, int nbits){
@@ -41,11 +62,6 @@ int* to_binary(int nombre){
   }
   change_to_base2(nombre, binaire, nbits);
   return binaire;
-}
-
-int check_ulg_code(int code){
-  assert(code > 0);
-  return (code/1000000) == 20; // retourner la partie entiere de la div sur 1 milion
 }
 
 int** fil_matrix_code(int nombre){
@@ -83,7 +99,7 @@ int** fil_matrix_code(int nombre){
    }// fin for i
  // return de la matrix
  fil_last_matrix_bloc(Matrix);
- printMatrix(Matrix, DIMESION, DIMESION);
+ //printMatrix(Matrix, DIMESION, DIMESION);
  return Matrix;
 }
 
@@ -105,7 +121,6 @@ void fil_last_matrix_bloc(int **Matrix){
     for (int j = 0; j < DIMESION-10; j+=10){
       sumLine += Matrix[i][j];
     }
-      printf("sumLine = %d a %d, %d \n", sumLine,i, DIMESION);
       for (int k = i; k < DIMESION-10; k++){
         for (int l = DIMESION-10; l < DIMESION; l++){
           Matrix[k][l] = sumLine%2;
@@ -121,7 +136,6 @@ void fil_last_matrix_bloc(int **Matrix){
     for (int j = 0; j < DIMESION-10; j+=10){
       sumColumn += Matrix[j][i];
     }
-      printf("sumLine = %d a %d, %d \n", sumLine,i, DIMESION);
       for (int k = i; k < DIMESION-10; k++){
         for (int l = DIMESION-10; l < DIMESION; l++){
           Matrix[l][k] = sumColumn%2;
