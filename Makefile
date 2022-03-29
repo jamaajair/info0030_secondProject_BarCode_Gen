@@ -1,6 +1,6 @@
 ###
-## Makefile skeleton
-## INFO0030: Projet 1
+## Jamaa JAIR s207171
+## INFO0030: Projet 2
 ##
 ###
 
@@ -15,6 +15,7 @@ LDFLAGS=
 # Files
 EXEC1=pnm
 EXEC2=codebarre
+DOXYGEN=doxygen
 MODULES_PNM=main-pnm.c pnm.c
 OBJETS_PNM=main-pnm.o pnm.o
 MODULES_CODEBARRE=main-codebarre.c codebarre.c pnm.c
@@ -26,7 +27,7 @@ all: pnm codebarre
 codebarre: $(OBJETS_CODEBARRE)
 	$(LD) -o $(EXEC2) $(OBJETS_CODEBARRE) -lm $(LDFLAGS)
 
-codebarre.o: codebarre.c pnm.c codebarre.h pnm.h
+codebarre.o: codebarre.c
 	$(CC) -c codebarre.c -o codebarre.o $(CFLAGS)
 
 main-codebarre.o: main-codebarre.c
@@ -38,8 +39,12 @@ pnm: $(OBJETS_PNM)
 main-pnm.o: main-pnm.c
 	$(CC) -c main-pnm.c -o main-pnm.o $(CFLAGS)
 
-pnm.o: pnm.c pnm.h
+pnm.o: pnm.c
 	$(CC) -c pnm.c -o pnm.o $(CFLAGS)
+
+doc:
+	$(DOXYGEN) Doxyfile
 
 clean:
 	rm -f *.o $(EXEC1) $(EXEC2) *~
+	rm -r html

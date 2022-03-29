@@ -15,6 +15,8 @@ int* to_binary(int );
 
 int check_is_ulg_code(char *);
 
+void change_to_base2(int nombre, int* binaire, int nbits);
+
 int check_file(char *);
 
 char* get_file_name(char* );

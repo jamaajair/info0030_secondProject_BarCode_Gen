@@ -98,8 +98,8 @@ int** fil_matrix_code(int nombre){
 }
 
 void printMatrix(int **M, int m, int n){
-  for (size_t i = 0; i < m; i++) {
-    for (size_t j = 0; j < n; j++) {
+  for (int i = 0; i < m; i++) {
+    for (int j = 0; j < n; j++) {
       printf("%d ",M[i][j] );
     }
     printf("\n");
