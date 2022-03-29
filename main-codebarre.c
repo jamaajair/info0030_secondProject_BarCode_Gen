@@ -15,9 +15,10 @@
 int main(int argc, char const *argv[]) {
 
    char *optstring = ":f:i:o:h";
-   char* file=malloc(sizeof(char)*MAX_SIZE);
-   char folder[MAX_SIZE];
+   char* file = malloc(sizeof(char)*MAX_SIZE);
+   char* folder=malloc(sizeof(char)*MAX_SIZE);
    char codeString[MAX_SIZE];
+   char* codeName;
    int codeNumber;
    int value, manqueOption=0;
 
@@ -44,29 +45,38 @@ int main(int argc, char const *argv[]) {
   }
 
   if(manqueOption != 1){
-    mkdir(folder, 0777);
-    if(check_file(file) == -1)
+    if(mkdir(folder, 0777) != 0)
       return 0;
+
+    chdir(folder);
 
     FILE *f = fopen(file, "r");
     if(f == NULL)
       return 0;
 
-      while(!feof(file)){
-        if(fscanf(file, "%s", codeString) == 1)
-          printf("%s\n",codeString );
+      while(!feof(f)){
+        if(fscanf(f, "%s", codeString) == 1){
+          if (check_is_ulg_code(codeString) == -1) {
+            printf("le fichier est mal formé !!\n");
+            return 0;
+          }
+          codeNumber = atoi(codeString);
+          PNM* image = malloc(sizeof(PNM*));
+          image = create_PNM(codeNumber);
+          //
+          codeName = malloc(sizeof(char)*MAX_SIZE);
+          strcpy(codeName,strcat(codeString,".pbm"));
+          write_pnm(image, codeName);
+          free_matrix(image);
+          free(image);
+          free(codeName);
+        }
       }
     /*while(!feof(file)){
       if(fscanf(file, "%s", codeString) != 1)
         return 0;
 
       codeNumber = atoi(codeString);
-
-      PNM* image = malloc(sizeof(PNM*));
-      image = create_PNM(codeNumber);
-      write_pnm(image, strcat(codeString,".pbm"));
-      free_matrix(image);
-      free(image);
 
     }*/
   }
