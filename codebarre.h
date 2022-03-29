@@ -1,5 +1,11 @@
-
+#include <stdlib.h>
+#include <assert.h>
+#include <stdio.h>
+#include <ctype.h>
+#include <math.h>
 #include "pnm.h"
+
+
 #ifndef __CODEBARRE__
 #define __CODEBARRE__
 
@@ -10,6 +16,8 @@ int* to_binary(int );
 int check_is_ulg_code(char *);
 
 int check_file(char *);
+
+char* get_file_name(char* );
 
 int** fil_matrix_code(int);
 

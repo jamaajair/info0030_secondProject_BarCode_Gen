@@ -4,9 +4,9 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <math.h>
+#include <string.h>
 #include "codebarre.h"
 #include "pnm.h"
-#include "pnm.c"
 
 int check_is_ulg_code(char* matricule){
   assert(matricule != NULL);
@@ -19,24 +19,6 @@ int check_is_ulg_code(char* matricule){
       }
   }
   return -1;
-}
-
-int check_file(char *file){
-  assert(file != NULL);
-
-  FILE *f = fopen(file,"r");
-  while(!feof(f)){
-    char* s = malloc(sizeof(char)*MAX_SIZE);
-    fscanf(f,"%s \n", s);
-
-    if(check_is_ulg_code(s) == -1){
-      printf("le fichier est mal formé!! \n");
-      fclose(f);
-      return -1;
-    }
-  }
-  fclose(f);
-  return 1;
 }
 
 void change_to_base2(int nombre, int* binaire, int nbits){
@@ -62,6 +44,18 @@ int* to_binary(int nombre){
   }
   change_to_base2(nombre, binaire, nbits);
   return binaire;
+}
+
+char* get_file_name(char* path){
+  assert(path != NULL);
+  int length = strlen(path);
+  int i = length;
+  while(i >=0 && path[i] != '/')
+        i--;
+  if (check_filename(&path[i+1]) == 1) {
+    return &path[i+1];
+  }
+  return NULL;
 }
 
 int** fil_matrix_code(int nombre){
