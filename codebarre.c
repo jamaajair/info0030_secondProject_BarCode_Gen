@@ -155,15 +155,6 @@ PNM* create_PNM(int nombre){
   return codebarre;
 }
 
-void fil_parity_matrix(int **Matrix, int i, int j, int value){
-  //assert
-  for(int k=i; k<i; k++){
-    for(int t= j; t<j; t++){
-      Matrix[k][t] = value;
-    }
-  }
-}
-
 void fil_bloc_matrix(int **Matrix, int i, int j, int value, int jump){
   //assert
   for(int k=i; k<jump+i; k++){
