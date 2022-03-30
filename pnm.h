@@ -9,6 +9,13 @@
  * @projet: INFO0030 Projet 1
  */
 
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <assert.h>
+ #include <string.h>
+ #include <ctype.h>
+ #include <regex.h>
+ 
  /*
    * Include guard (pour éviter les problèmes d'inclusions multiplies
    *
@@ -250,5 +257,7 @@ void display_succes(void);
  void free_matrix(PNM* image);
 //a faire
 int** get_matrix(PNM* image);
+
+void free_image(PNM* image);
 
 #endif // __PNM__

@@ -352,3 +352,9 @@ void display_succes(void){
   printf("\tle traitement est terminer............................................SUCCES \n\n");
   printf("\t------------------VOTRE FICHIER EST DISPONIBLE-------------------------------\n");
 }
+
+void free_image(PNM* image){
+  assert(image != NULL);
+  free_matrix(image);
+  free(image);
+}
