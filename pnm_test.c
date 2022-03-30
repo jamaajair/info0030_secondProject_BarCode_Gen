@@ -7,7 +7,7 @@ static void test_load_write_pnm(){
   PNM* image3= NULL;
 
   int i = load_pnm(&image1, "scs.pbm");
-  int j = load_pnm(&image2,"monalisa.pgm");
+  int j = load_pnm(&image2,"totem.pgm");
   int k = load_pnm(&image3,"antilope.ppm");
 
   /*------------------le bon fonctionnement du load_pnm----------------------*/
@@ -17,13 +17,27 @@ static void test_load_write_pnm(){
 
   /*-------------------le bon fonctionnement du write_pnm-----------------------*/
   int l= write_pnm(image1,"scs-copie.pbm");
-  int m= write_pnm(image2,"monalisa-copie.pgm");
-  int n= 
+  int m= write_pnm(image2,"totem-copie.pgm");
+  int n= write_pnm(image3,"antilope-copie,pgm");
+
+  assert_int_equal(0,l);
+  assert_int_equal(0,m);
+  assert_int_equal(0,n);
+
+  /*---teste write_pnm avec un nom fichier contient des caracteres spéciaux----*/
+
+  int o= write_pnm(image1,"scs-cop<<ie.pbm");
+  int p= write_pnm(image2,"totem-co>>pie.pgm");
+  int q= write_pnm(image3,"anti/lope-c/opie,pgm");
+
+  assert_int_equal(-1,o);
+  assert_int_equal(-1,p);
+  assert_int_equal(-1,q);
 }
 
 static void test_fixture(){
   test_fixture_start();
-  run_tests(test_load_pnm);
+  run_tests(test_load_write_pnm);
   test_fixture_end();
 }
 
