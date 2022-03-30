@@ -10,16 +10,20 @@
 
 int check_is_ulg_code(char* regestrationNumber){
   assert(regestrationNumber != NULL);
-  if(strlen(regestrationNumber) != 8)
+  if(strlen(regestrationNumber) != 8){
+    printf("le fichier est mal formé\n");
     return -1;
-  for (size_t i = 0; i < strlen(regestrationNumber); i++) {
-      if(regestrationNumber[i] =='0' || regestrationNumber[i] =='1' || regestrationNumber[i] =='2' ||
-         regestrationNumber[i] =='3' || regestrationNumber[i] =='4' || regestrationNumber[i] == '5'||
-         regestrationNumber[i] == '6'|| regestrationNumber[i] == '7' || regestrationNumber[i] == '8'||
-         regestrationNumber[i]=='9'){
-      return 1;
-      }
   }
+  int length = strlen(regestrationNumber)-1, i=0;
+  while( i != length && (regestrationNumber[i] =='0' || regestrationNumber[i] =='1'
+     || regestrationNumber[i] =='2' || regestrationNumber[i] =='3'
+     || regestrationNumber[i] =='4' || regestrationNumber[i] == '5'
+     || regestrationNumber[i] == '6'|| regestrationNumber[i] == '7'
+     || regestrationNumber[i] == '8'|| regestrationNumber[i]=='9')) {
+      i++;
+      }
+  if(i == length)
+    return 1;
   return -1;
 }
 

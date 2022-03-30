@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
        if(chdir(folder) == 0 ){
          while(!feof(f)){
            if(fscanf(f, "%s", codeString) == 1){
-             if (check_is_ulg_code(codeString) == -1){
+             if (check_is_ulg_code(codeString) != 1){
                printf("le fichier est mal formé !!\n");
                return 0;
              }
@@ -67,6 +67,11 @@ int main(int argc, char *argv[]) {
              strcpy(codeName,strcat(codeString,".pbm"));
              if(write_pnm(image, codeName) ==0)
                 printf("succes\n");
+            int *A= to_binary(7877);
+            int *B= to_binary(7877);
+            for (size_t i = 0; i < 13; i++) {
+              printf("%d - %d\n",A[i], B[i] );
+            }
              free_matrix(image);
              free(image);
              free(codeName);

@@ -50,26 +50,26 @@ int get_maxPix(PNM* image){
 }
 
 void set_MagicNumber(PNM* image, char* magicNumber){
-  assert(image != NULL  && ((strcmp(magicNumber, P1) == 0) || (strcmp(magicNumber, P2) == 0)
-        || (strcmp(magicNumber, P3) == 0)));
+  assert((strcmp(magicNumber, P1) == 0) || (strcmp(magicNumber, P2) == 0)
+        || (strcmp(magicNumber, P3) == 0));
 
   strcpy(image->magicNumber, magicNumber);
 }
 
 void set_nLines(PNM* image,int nLines){
-  assert(image != NULL && nLines > 0);
+  assert( nLines > 0);
 
   image->nLines = nLines;
 }
 
 void set_nColumns(PNM* image,int nColumns){
-  assert(image != NULL && nColumns > 0);
+  assert( nColumns > 0);
 
   image->nColumns = nColumns;
 }
 
 void set_maxPix(PNM* image, int maxPix){
-    assert(image != NULL && maxPix > 0);
+    assert( maxPix > 0);
 
     image->maxPix = maxPix;
 }
