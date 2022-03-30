@@ -144,7 +144,7 @@ PNM* create_PNM(int number){
 
   set_nLines(barCode, DIMESION);
   set_nColumns(barCode, DIMESION);
-  set_maxPix(barCode, DIMESION);
+  set_maxPix(barCode, 0);
   set_MagicNumber(barCode, P1);
 
   set_Matrix(barCode, fil_matrix_code(number));

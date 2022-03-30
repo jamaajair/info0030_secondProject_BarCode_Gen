@@ -69,7 +69,7 @@ void set_nColumns(PNM* image,int nColumns){
 }
 
 void set_maxPix(PNM* image, int maxPix){
-    assert( maxPix > 0);
+    assert( maxPix >= 0);
 
     image->maxPix = maxPix;
 }

@@ -99,8 +99,10 @@ static void test_fil_last_matrix_bloc(){
 static void test_create_PNM(){
   int number = 320;
 
-  PNM* image1 = NULL;
-  char magiqueNumber[4] = "PBM";
+  PNM* image1=malloc(sizeof(PNM*));
+  if(image1 == NULL)
+    abort();
+  char magiqueNumber[4] = P1;
   set_nLines(image1, DIMESION);
   set_nColumns(image1, DIMESION);
   set_maxPix(image1, 0);
@@ -111,8 +113,15 @@ static void test_create_PNM(){
   image2 = create_PNM(number);
 
   assert_string_equal(get_MagicNumber(image1), get_MagicNumber(image2));
+  assert_int_equal(get_nLines(image1), get_nLines(image2));
+  assert_int_equal(get_nColumns(image1), get_nColumns(image2));
+  assert_int_equal(get_maxPix(image1), get_maxPix(image2));
+  assert_int_equal(1, compare_two_Matrix(get_matrix(image1), get_matrix(image2), DIMESION));
 
-
+  free_matrix(image1);
+  free_matrix(image2);
+  free(image1);
+  free(image2);
 }
 
 static void test_fixture(){
