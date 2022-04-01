@@ -29,7 +29,7 @@ static int compare_two_string(char *A, char *B){
   assert(A != NULL && B != NULL);
 
   /*--------------------- Comparer les deux String valeur par valeur -----------------------*/
-  int i=0, j=0;
+  size_t i=0, j=0;
   while (i != strlen(A)-1 && j!= strlen(B)-1 && A[i]==B[i]) {
     i++;
     j++;
@@ -44,8 +44,8 @@ static int compare_two_Matrix(int **A, int **B, int dimension){
   assert(A != NULL && B != NULL);
 
   /*--------------------- Comparer les deux Matrices valeur par valeur -----------------------*/
-  for (size_t i = 0; i < dimension; i++) {
-    for (size_t j = 0; j < dimension; j++) {
+  for (int i = 0; i < dimension; i++) {
+    for (int j = 0; j < dimension; j++) {
       if(A[i][j] != B[i][j])
         return -1;
     }//fin for
@@ -54,7 +54,7 @@ static int compare_two_Matrix(int **A, int **B, int dimension){
   return 1;
 }
 
-void free_matrix_code(int **Matrix){
+static void free_matrix_code(int **Matrix){
   assert(Matrix != NULL);
 
   for (size_t i = 0; i < DIMESION; i++) {

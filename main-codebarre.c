@@ -11,6 +11,7 @@
 #include <getopt.h>
 #include "codebarre.h"
 #include "pnm.h"
+#include "pnm.c"
 
 int main(int argc, char *argv[]) {
 
