@@ -12,7 +12,7 @@ static void test_check_is_ulg_code(){
 }
 
 static int compare_two_table(int *A, int *B, int size){
-  assert(A != NULL && B != NULL && n>0);
+  assert(A != NULL && B != NULL && size>0);
 
   /*--------------------- Comparer les deux tableau valeur par valeur -----------------------*/
   int i = 0;

@@ -60,18 +60,15 @@ int main(int argc, char *argv[]) {
                printf("le fichier est mal formé !!\n");
                return 0;
              }
+             if(strcmp(codeString,"") == 0)
+                abort();
              codeNumber = atoi(codeString); // casting vers l'entier
              PNM* image = malloc(sizeof(PNM*));
              image = create_PNM(codeNumber);
              codeName = malloc(sizeof(char)*MAX_SIZE); // check malloc succes
              strcpy(codeName,strcat(codeString,".pbm"));
-             if(write_pnm(image, codeName) ==0)
+             if(write_pnm(image, codeName) == 0)
                 printf("succes\n");
-            int *A= to_binary(7877);
-            int *B= to_binary(7877);
-            for (size_t i = 0; i < 13; i++) {
-              printf("%d - %d\n",A[i], B[i] );
-            }
              free_matrix(image);
              free(image);
              free(codeName);

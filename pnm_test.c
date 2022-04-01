@@ -33,6 +33,10 @@ static void test_load_write_pnm(){
   assert_int_equal(-1,o);
   assert_int_equal(-1,p);
   assert_int_equal(-1,q);
+
+  //free_image(image1);
+  //free_image(image2);
+  //free_image(image3);
 }
 
 static void test_fixture(){
