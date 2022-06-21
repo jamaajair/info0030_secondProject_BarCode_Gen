@@ -27,7 +27,13 @@
  * Déclaration des macros
  *
  */
-#define DIMESION 70
+#define DIMESION 70 //!<Macro DIMENSION pour les demensions de la matrice
+
+
+int generate_code_barre(char *input_file, char* output_folder);
+char* generate_file_name(char *code);
+
+
 
 //------------------------------------------------------------------------------
 /**
@@ -36,7 +42,7 @@
  *        à besoin de moins de 36 bits pour l'encodage sinon impossible de faire
  *        le changement de base car la matrice qui represente le matricule est de 6*6
  *
- * \param number, nombre à convertir en binaire. (>0)
+ * \param number: nombre à convertir en binaire. (>0)
  *
  * \return un tableau des 0 et 1 contient la représentation du "number" en binaire
  *
@@ -49,7 +55,7 @@ int* to_binary(int number);
  * \fn int check_is_ulg_code(char *code)
  * \brief verification si la chaine de caractere est un code ulg ou pas.
  *
- * \param code, une chaine de caractere à tester s'elle s'agit d'un code ulg. (>0)
+ * \param regestrationNumber: une chaine de caractere à tester s'elle s'agit d'un code ulg. (>0)
  *
  * \return
  *        1 en cas de "code" est bien un matricule de la ULG
@@ -57,17 +63,16 @@ int* to_binary(int number);
  *
  */
  //------------------------------------------------------------------------------
-int check_is_ulg_code(char *code);
+int check_is_ulg_code(char *regestrationNumber);
 
 //------------------------------------------------------------------------------
 /**
  * \fn void change_to_base2(int number, int* binary, int nbits)
  * \brief caclculer la representation de number en base 2 et la stocker dans binary
  *
- * \param number, le nombre à représenter en base 2. (>0)
- * \param binary, le tableau qui va contient la représentation de number en binaire
- * \param nbits, le nombre de bits pour représenter number en base 2
- *
+ * \param number: le nombre à représenter en base 2. (>0)
+ * \param binary: le tableau qui va contient la représentation de number en binaire
+ * \param nbits: le nombre de bits pour représenter number en base 2
  *
  */
  //------------------------------------------------------------------------------
@@ -79,7 +84,7 @@ void change_to_base2(int number, int* binary, int nbits);
  *        ou relatif, on vas faire un test sur le nom de fichier pour tester s'il contient
  *        des caracteres spéciaux.
  *
- * \param path, le chemin saisi par l'utilisateur pour indique l'endroit ou il se trouve
+ * \param path: le chemin saisi par l'utilisateur pour indique l'endroit ou il se trouve
  *        le fichier qui contient le matricules des etudiants de la ULG
  *
  *\return le nom du fichier
@@ -93,7 +98,7 @@ char* get_file_name(char* path);
  * \brief l'encodage de la matrice en basent sur la representation en base 2 du
  *        number.
  *
- * \param number, le nombre a représenter en binaire (>0), a fin de remplir la matrice
+ * \param number: le nombre a représenter en binaire (>0), a fin de remplir la matrice
  *
  *\return la matrice qui représente le code barre du number
  *
@@ -107,12 +112,11 @@ int** fil_matrix_code(int number);
  *         mais vu que on dois représenter chaque bit 10*10 à fin d'obtenir
  *         une matrice de 70*70.
  *
- * \param Matrix, la matrice qui représente le code barre d'un matre ulg
- *        i, l'indice ligne
- *        j, l'indice colonne
- *        value, la value a mettre dans dans le bloc de la matrice commence dans (i,j)
- *        jump, la valeur represente la taille du bloc
- *
+ * \param Matrix: la matrice qui représente le code barre d'un matre ulg
+ * \param i: l'indice ligne
+ * \param j: l'indice colonne
+ * \param value: la value a mettre dans dans le bloc de la matrice commence dans (i,j)
+ * \param jump: la valeur represente la taille du bloc
  *
  */
  //------------------------------------------------------------------------------
@@ -124,7 +128,7 @@ void fil_bloc_matrix(int **Matrix, int i, int j, int value, int jump);
  *         et 70*70 dans nombre ligne et colonne, et la matrice à génere en
  *         basent sur la représentation binaire de number
  *
- * \param number, le nombre a représenter en binaire (>0), a fin de remplir la matrice
+ * \param number: le nombre a représenter en binaire (>0), a fin de remplir la matrice
  *
  *\return l'image PNM qui montre le code barre en image concrete
  */
@@ -137,7 +141,7 @@ void fil_bloc_matrix(int **Matrix, int i, int j, int value, int jump);
   *         ligne (resp colonne), le bit de par est dans la dérnière ligne (rep colonne)
   *
   *
-  * \param Matrix, la matrice qui représente le code barre d'un matre ulg
+  * \param Matrix: la matrice qui représente le code barre d'un matre ulg
   *
   */
   //------------------------------------------------------------------------------

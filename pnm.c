@@ -6,7 +6,7 @@
  *
  * @author   : Jair Jamaa s207171
  * @date    : 08/03/2022
- * @projet  : INFO0030 Projet 1
+ *
  */
 
 #include <stdio.h>
@@ -18,11 +18,11 @@
 #include "pnm.h"
 
 struct PNM_t {
- char magicNumber[3];   // Le nombre magique peut prendre P1 ou P2 ou P3
- int nLines;            // Le nombre de lignes de la matrice
- int nColumns;          // Le nombre de colonnes de la matrice
- int maxPix;           //  Le nombre maximal d'un pixel dans l'image
- int **Matrice;        //  La matrice represente l'image
+ char magicNumber[3];   //!< Le nombre magique peut prendre P1 ou P2 ou P3.
+ int nLines;            //!< Le nombre de lignes de la matrice
+ int nColumns;          //!< Le nombre de colonnes de la matrice
+ int maxPix;            //!< Le nombre maximal d'un pixel dans l'image
+ int **Matrice;         //!< La matrice represente l'image
 };
 
 char* get_MagicNumber(PNM* image){
@@ -193,7 +193,7 @@ int check_filename(char *filename){
  char temp;
  while( i<size ){
    temp = filename[i];
-   if(temp == ':' || temp == '/' || temp == '\\' || temp == '*' \
+   if(temp == ':' || temp == '\\' || temp == '*' \
       || temp == '?' || temp == '"'|| temp == '>' || temp == '<' \
       || temp == '|' \
       )
@@ -307,22 +307,20 @@ int write_pnm(PNM *image, char* filename) {
    if(check_filename(filename) != 1)
      return -1;
 
-   FILE *f = fopen(filename, "w");
-   if(f == NULL){
+   FILE *f = fopen(filename, "o");
+   if(f == NULL)
      return -2;
-   }
 
    fprintf(f, "%s\n",get_MagicNumber(image));
 
    fprintf(f, "%u %u\n",get_nColumns(image), get_nLines(image));
 
-   if(strcmp(get_MagicNumber(image), P2) == 0 || strcmp(get_MagicNumber(image), P3) == 0){
+   if(strcmp(get_MagicNumber(image), P2) == 0 || strcmp(get_MagicNumber(image), P3) == 0)
         fprintf(f, "%u\n",get_maxPix(image));
-   }
 
-   if(strcmp(get_MagicNumber(image), P3) == 0){
+   if(strcmp(get_MagicNumber(image), P3) == 0)
      set_nColumns(image, get_nColumns(image)* 3);
-   }
+
    for(int i=0; i< get_nLines(image); i++){
      for(int j=0; j< get_nColumns(image); j++){
        fprintf(f, "%d ",image->Matrice[i][j]);

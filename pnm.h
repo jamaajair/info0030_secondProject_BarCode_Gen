@@ -15,7 +15,7 @@
  #include <string.h>
  #include <ctype.h>
  #include <regex.h>
- 
+
  /*
    * Include guard (pour éviter les problèmes d'inclusions multiplies
    *
@@ -40,7 +40,7 @@ typedef struct PNM_t PNM;
 /**-----------------------------------------------------------------------------
  * \fn char* get_MagicNumber(PNM* )
  * \brief retourne la chaine de caractere stocké dans la variable magicNumber
- * \param une image PNM
+ * \param image: une image PNM
  *
  * \return magicNumber
  -----------------------------------------------------------------------------*/
@@ -48,7 +48,7 @@ typedef struct PNM_t PNM;
  /**----------------------------------------------------------------------------
   * \fn get_nLines(PNM* )
   * \brief retourne le nombre de ligne de l'image passe en argument
-  * \param une image PNM
+  * \param image: une image PNM
   *
   * \return nLines
  -----------------------------------------------------------------------------*/
@@ -56,7 +56,7 @@ typedef struct PNM_t PNM;
  /**----------------------------------------------------------------------------
   * \fn get_nColumns(PNM* )
   * \brief retourne le nombre de colonne de l'image passe en argument
-  * \param une image PNM
+  * \param image: une image PNM
   *
   * \return nColumns
  -----------------------------------------------------------------------------*/
@@ -64,7 +64,7 @@ typedef struct PNM_t PNM;
  /**----------------------------------------------------------------------------
   * \fn get_maxPix(PNM* )
   * \brief retourne le nombre maximal de pixel de l'image passe en argument
-  * \param une image PNM
+  * \param image: une image PNM
   *
   * \return nombre maximal des pixel
  -----------------------------------------------------------------------------*/
@@ -73,28 +73,26 @@ typedef struct PNM_t PNM;
   * \fn set_MagicNumber(PNM* , char* )
   * \brief sert à stocker la chaine de caractere passé en arg dans la variable
   *        magicNumber de l'image PNM passé en agr
-  * \param une image PNM et une chaine de caractere represente le magic number
+  * \param image: une image PNM
+  *        magicNumber: une chaine de caractere represente le magic number
   *
-  * \return -
- -----------------------------------------------------------------------------*/
+  ---------------------------------------------------------------------------*/
  void set_MagicNumber(PNM* image, char* magicNumber);
  /**----------------------------------------------------------------------------
   * \fn set_nLines(PNM *image,int nLines)
   * \brief sert à stocker l'entier passé en arg dans la variable
   *        nLines de l'image PNM passé en agr
-  * \param une image PNM et un entier represente le nombre de lignes
+  * \param image: une image PNM et un entier represente le nombre de lignes
   *
-  * \return -
- -----------------------------------------------------------------------------*/
+  -----------------------------------------------------------------------------*/
  void set_nLines(PNM *image,int nLines);
  /**----------------------------------------------------------------------------
   * \fn set_nColumns(PNM *image,int nColumns)
   * \brief sert à stocker l'entier passé en arg dans la variable
   *        nColumns de l'image PNM passé en agr
-  * \param une image PNM et un entier represente le nombre de colonnes
-  *
-  * \return -
- -----------------------------------------------------------------------------*/
+  * \param image: une image PNM
+  *        nColumns: un entier represente le nombre de colonnes
+  ----------------------------------------------------------------------------*/
  void set_nColumns(PNM *image,int nColumns);
  /**----------------------------------------------------------------------------
   * \fn set_Matrix(PNM *image,int nColumns)
@@ -102,8 +100,7 @@ typedef struct PNM_t PNM;
   *        nColumns de l'image PNM passé en agr
   * \param une image PNM et un entier represente le nombre de colonnes
   *
-  * \return -
- -----------------------------------------------------------------------------*/
+  -----------------------------------------------------------------------------*/
  void set_Matrix(PNM* image, int** Matrix);
  /**----------------------------------------------------------------------------
   * \fn set_maxPix(PNM* image, int maxPix)
@@ -111,8 +108,7 @@ typedef struct PNM_t PNM;
   *        maxPix de l'image PNM passé en agr
   * \param une image PNM et un entier represente le nombre maximal des pixel
   *
-  * \return -
- -----------------------------------------------------------------------------*/
+  -----------------------------------------------------------------------------*/
  void set_maxPix(PNM* image, int maxPix);
 /**-----------------------------------------------------------------------------
  * \fn int check_extension(char *s)
@@ -121,6 +117,7 @@ typedef struct PNM_t PNM;
  *
  * \return 1 si la chaine de caractere passé en agrument est soit PPM ou PBM
  *         ou PGM et -1 dans le contraire
+ *
  -----------------------------------------------------------------------------*/
  int check_extension(char *);
  /**----------------------------------------------------------------------------
@@ -145,17 +142,19 @@ typedef struct PNM_t PNM;
   *                                          char *output, char *format_demande)
   * \brief permet de savoir est ce que le fichier input et output ont la meme
   *          format ou pas
-  *\param une chaine de caractère
-  * \return return 1 si les deux noms des fichiers ont la meme format
+  *\param input une chaine de caractère input
+  *\param out: put une chaine de caractère output
+  *\param input une chaine de caractère format demande
+  *\return return 1 si les deux noms des fichiers ont la meme format
   *         (exemple : PPM et PPM) et -1 sinon (exemple : PPM et PGM)
   ----------------------------------------------------------------------------*/
  int check_input_output_format(char *input, char *output, char *format_demande);
  /**----------------------------------------------------------------------------
   * \fn     void check_comments(FILE *fp)
   * \brief permet d'éviter de lire les lignes ou il y des commentaires dans le
-          fichier source
+  *        fichier source
   *\param teois chaine de caractère
-  ----------------------------------------------------------------------------*/
+   ---------------------------------------------------------------------------*/
  void check_comments(FILE *fp);
  /**----------------------------------------------------------------------------
   * \fn    int check_magic_number(char *val)
@@ -171,6 +170,7 @@ typedef struct PNM_t PNM;
   * \brief permet de modier le nombre de nb_colonnes si le nombre magique est P3
   *\param une chaine de caractère
   * \return return nb_colonne modifie (ou pas)
+  *
   ----------------------------------------------------------------------------*/
  int check_nb_columns(int nb_colonne, char *nb_magique);
   /**---------------------------------------------------------------------------
@@ -178,13 +178,14 @@ typedef struct PNM_t PNM;
    * \brief permet d'allouer un espace memoire pour une structure PNM
    *\param une chaine de caractère et un entier
    * \return return 1 si malloc réussi et -1 sinon
-   ---------------------------------------------------------------------------*/
+   --------------------------------------------------------------------------*/
  int allocate_memory_image(PNM **image);
  /**----------------------------------------------------------------------------
   * \fn    int **fil_matrix(PNM **image, FILE *f)
   * \brief permet remplis la Matrice à partier dans un fichier donné
   *\param une PNM
   * \return return une Matrice remplis
+  *
   ----------------------------------------------------------------------------*/
  int **fil_matrix(PNM **image, FILE *f);
  /**----------------------------------------------------------------------------
@@ -239,25 +240,37 @@ int write_pnm(PNM *image, char* filename);
  * \brief permet d'afficher un message d'aide à l'utilisateur
  *\param le procedure prends void pour indiquer que "pas d'args"
  * \return -
- ----------------------------------------------------------------------------*/
+  ----------------------------------------------------------------------------*/
 void display_help(void);
 /**----------------------------------------------------------------------------
- * \fn  display_succes);
- * \brief permet d'afficher un message de fin de traitement avec succes l'utilisateur
+ * \fn  display_help();
+ * \brief permet d'afficher un message de fin d'aide
  *\param le procedure prends void pour indiquer que "pas d'args"
- * \return -
  ----------------------------------------------------------------------------*/
 void display_succes(void);
 /**----------------------------------------------------------------------------
- * \fn  display_succes);
+ * \fn  display_succes(void);
  * \brief permet d'afficher un message de fin de traitement avec succes l'utilisateur
  *\param le procedure prends void pour indiquer que "pas d'args"
- * \return -
  ----------------------------------------------------------------------------*/
  void free_matrix(PNM* image);
-//a faire
+ /**----------------------------------------------------------------------------
+  * \fn free_matrix(PNM* image);
+  * \brief permet de libérer l'éspace ocuupé par la matrice de l'image PNM image
+  *\param image: le procedure prends void pour indiquer que "pas d'args"
+  ----------------------------------------------------------------------------*/
 int** get_matrix(PNM* image);
-
+/**----------------------------------------------------------------------------
+ * \fn get_matrix(PNM* image);
+ * \brief permet de de retourner la matrice de l'image PNM image
+ *\param image: le procedure prends void pour indiquer que "pas d'args"
+ * \return la matrice de l'image PNM
+ ----------------------------------------------------------------------------*/
 void free_image(PNM* image);
+/**----------------------------------------------------------------------------
+ * \fn free_image(PNM* image);
+ * \brief permet de libérer l'éspace ocuupé par l'image PNM image
+ *\param image: le procedure prends void pour indiquer que "pas d'args"
+ */
 
 #endif // __PNM__

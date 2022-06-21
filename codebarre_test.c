@@ -1,3 +1,15 @@
+/**
+ * \file codebarre_test.c
+ *
+ * \brief INFO0030 Projet 2 - Code Barre
+ * \author Jamaa JAIR s207171
+ * \version 0.1
+ * \date 29/03/2022
+ *
+ * Ce fichier contient les tests unitaires du fichier codebarre.c
+ *  et les prototypes des fonctions pour coder les matricules des étudiants de l'ULG.
+ */
+
 #include <string.h>
 #include "codebarre.h"
 #include "seatest.h"

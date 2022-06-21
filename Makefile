@@ -23,7 +23,7 @@ EXEC5=libpnm.a
 DOXYGEN=doxygen
 
 OBJETS_PNM_TEST= seatest.o pnm.o pnm_test.o
-OBJETS_CODEBARRE = main-codebarre.o codebarre.o
+OBJETS_CODEBARRE = main.o codebarre.o
 OBJETS_CODEBARRE_TEST= codebarre_test.o seatest.o pnm.o codebarre.o
 OBJETS_LIBPNM=pnm.o
 ## Rules
@@ -50,8 +50,8 @@ codebarre_test:$(OBJETS_CODEBARRE_TEST)
 codebarre.o:codebarre.c
 	$(CC) -c codebarre.c -L. -lpnm -o codebarre.o $(CFLAGS) -lm
 
-main-codebarre.o:main-codebarre.c
-	$(CC) -c main-codebarre.c -o main-codebarre.o $(CFLAGS)
+main.o:main.c
+	$(CC) -c main.c -o main.o $(CFLAGS)
 
 codebarre_test.o:codebarre_test.c
 	$(CC) -c codebarre_test.c -o codebarre_test.o $(CFLAGS)

@@ -1,31 +1,183 @@
+/**
+ * \file codebarre.c
+ *
+ * \brief INFO0030 Projet 2 - Code Barre
+ * \author Jamaa JAIR s207171
+ * \version 0.1
+ * \date 29/03/2022
+ *
+ * Ce fichier contient les implémentations
+ *  et les prototypes des fonctions pour coder les matricules des étudiants de l'ULG.
+ */
 
 #include <stdlib.h>
 #include <assert.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <math.h>
+#include <dirent.h>
+#include <errno.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include "codebarre.h"
 #include "pnm.h"
 
-int check_is_ulg_code(char* regestrationNumber){
-  assert(regestrationNumber != NULL);
-  if(strlen(regestrationNumber) != 8){
-    printf("le fichier est mal formé\n");
+
+#define SIZE 1024
+
+int generate_code_barre(char *input_file, char* output_folder){
+  assert(input_file != NULL && output_folder != NULL);
+
+  FILE *file = fopen(input_file, "r");
+
+
+  if(file == NULL){
+    printf("le fichier input non trouvé ");
     return -1;
   }
-  int length = strlen(regestrationNumber)-1, i=0;
-  while( i != length && (regestrationNumber[i] =='0' || regestrationNumber[i] =='1'
-     || regestrationNumber[i] =='2' || regestrationNumber[i] =='3'
-     || regestrationNumber[i] =='4' || regestrationNumber[i] == '5'
-     || regestrationNumber[i] == '6'|| regestrationNumber[i] == '7'
-     || regestrationNumber[i] == '8'|| regestrationNumber[i]=='9')) {
-      i++;
+
+  char code[SIZE];
+
+  while(!feof(file)){
+
+    /* l'utilisation de fgets ou lieu de fscanf car fscanf ignore
+      les espaces au debut et a la fin d une ligne ainsi les lignes vide
+      ce qui ne nous permet pas de faire un bonne detection d'un fichier mal forme */
+
+    if(fgets(code, SIZE,file )){
+      if (check_is_ulg_code(code) != 1){
+        printf("le fichier est mal formé !!\n");
+        return 0;
       }
-  if(i == length)
-    return 1;
-  return -1;
+
+      //convertir du code lu en int
+      int codeNumber = atoi(code);
+
+      // la creation de l'image PNM
+      PNM* image = malloc(sizeof(PNM*));
+      if(image == NULL){
+        fclose(file);
+        printf("impossible d'ecrire une image dans la memoire \n");
+        return 0;
+      }
+      image = create_PNM(codeNumber);
+
+      // generer le fichier qui represente le code barre avec son nom
+      char *codeName = malloc(sizeof(char)*MAX_SIZE);
+      if(codeName == NULL){
+        fclose(file);
+        free_image(image);
+        printf("ERREUR: dans la generation du nom du fichier\n");
+        return 0;
+      }
+
+      //genere l endroit ou l'image va etre enregistrer
+      char path[SIZE];
+      strcpy(path, output_folder);
+      codeName = generate_file_name(code);
+      strcat(output_folder, "/");
+      strcat(output_folder, codeName);
+
+      // enregistrer le codebarre dans chemin fournit par l'utilisateur
+      DIR *dp = opendir(path);
+
+      // le dossier output existe deja
+      if(dp){
+        printf("dossier existe \n");
+        if(write_pnm(image, output_folder) != 0){
+          printf("ERREUR: dans le Sauvegarde de l'image \n");
+          fclose(file);
+          free(codeName);
+          free_image(image);
+          return 0;
+        }
+      }else if(ENOENT == errno){ // le dossier n'existe pas
+        printf("dossier n existe pas on le creer\n");
+        mkdir(path, 0700); // mkdir pour creer le dossier avec droits d acces RWX=700
+        if(write_pnm(image, output_folder) != 0){
+          printf("ERREUR: dans le Sauvegarde de l'image \n");
+          fclose(file);
+          free(codeName);
+          free_image(image);
+          return 0;
+        }
+      }
+
+      // free la memoire
+      free_matrix(image);
+      free(image);
+      free(codeName);
+    }
+  }
+  fclose(file);
+  return 1;
 }
+
+int check_is_ulg_code(char* regestrationNumber){
+  assert(regestrationNumber != NULL);
+
+  unsigned int UlgCodeSize =  8;
+  unsigned int length = strlen(regestrationNumber);
+
+  // verification si la taille du code different de 8
+  if((length-1) != UlgCodeSize){
+    printf("le code ne contient pas exactement 8 éléments- fichier mal formé\n");
+    return -1;
+  }
+
+  // verification si une matricule n'est pas vide ou une tabulation
+  if(regestrationNumber[0] == ' '){
+    printf("la ligne commence par un caractere vide - fichier mal formé");
+    return -1;
+  }
+
+  // verification si une matricule n'est pas vide ou une tabulation
+  if(regestrationNumber[0] == '\n'){
+    printf("la ligne commence par une ligne vide - fichier mal formé\n");
+    return -1;
+  }
+
+  // verification si une matricule n'est pas vide ou une tabulation
+  if(regestrationNumber[0] == '\r'){
+    printf("la ligne commence par une tabulation - fichier mal formé\n");
+    return -1;
+  }
+
+
+  // verf si la UlgCode contient d'autres elements que des digits
+  for (unsigned int i = 0; i < length-1; i++) {
+    if( !isdigit(regestrationNumber[i]) || regestrationNumber[i] == ' '
+        || regestrationNumber[i] == '\r'){
+        printf("le matricule contient des non digits - fichier mal formé\n");
+        return -1;
+    }
+
+  }
+
+  return 1;
+}
+
+char* generate_file_name(char *code){
+  assert(code != NULL);
+
+  int length = strlen(code);
+  char *name = malloc(sizeof(char)*length+4);
+  if(name == NULL){
+    return NULL;
+  }
+  strcpy(name, code);
+
+  name[length-1] = '.';
+  name[length] = 'p';
+  name[length+1] = 'b';
+  name[length+2] = 'm';
+  name[length+3] = '\0';
+
+  return name;
+}
+
 
 void change_to_base2(int number, int* binary, int nbits){
   assert(number > 0 && binary != NULL && nbits < 36);
@@ -152,7 +304,8 @@ PNM* create_PNM(int number){
 }
 
 void fil_bloc_matrix(int **Matrix, int i, int j, int value, int jump){
-  //assert
+  assert(Matrix != NULL && i>= 0 && j>= 0 && jump >=0);
+
   for(int k=i; k<jump+i; k++){
     for(int t= j; t<jump+j; t++){
       Matrix[k][t] = value;
