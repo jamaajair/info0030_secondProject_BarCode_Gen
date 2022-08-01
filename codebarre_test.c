@@ -16,10 +16,10 @@
 
 static void test_check_is_ulg_code(){
   /*----------------------- test par exemples du matricule -------------------------*/
-  assert_int_equal(1,check_is_ulg_code("20207171"));
-  assert_int_equal(1,check_is_ulg_code("99999999"));
-  assert_int_equal(1,check_is_ulg_code("00000000"));
-  assert_int_equal(-1,check_is_ulg_code("blablabl"));
+  assert_int_equal(1,check_is_ulg_code("202071711"));
+  assert_int_equal(1,check_is_ulg_code("999999919"));
+  assert_int_equal(-1,check_is_ulg_code("00000000"));
+  assert_int_equal(-1,check_is_ulg_code("ULG FACSA"));
   assert_int_equal(-1,check_is_ulg_code("INFO0030"));
 }
 
@@ -33,21 +33,6 @@ static int compare_two_table(int *A, int *B, int size){
   }//fin while
 
   if(i == size-1)
-    return 1;
-  return -1;
-}
-
-static int compare_two_string(char *A, char *B){
-  assert(A != NULL && B != NULL);
-
-  /*--------------------- Comparer les deux String valeur par valeur -----------------------*/
-  size_t i=0, j=0;
-  while (i != strlen(A)-1 && j!= strlen(B)-1 && A[i]==B[i]) {
-    i++;
-    j++;
-  }// fin while
-
-  if(i == strlen(A)-1 && j == strlen(B)-1)
     return 1;
   return -1;
 }
@@ -73,16 +58,6 @@ static void free_matrix_code(int **Matrix){
     free(Matrix[i]);
   }//fin for
   free(Matrix);
-}
-
-static void test_to_binary(){
-  /*--------------------- Comparer les représentation de la meme nombre--------------------*/
-  assert_int_equal(1, compare_two_table(to_binary(155),to_binary(155),8));
-  assert_int_equal(1, compare_two_table(to_binary(1),to_binary(1),1));
-  assert_int_equal(1, compare_two_table(to_binary(9500735), to_binary(9500735), 24));
-  assert_int_equal(-1, compare_two_table(to_binary(29), to_binary(27), 5));
-  assert_n_array_equal(to_binary(155),to_binary(155),8);
-  assert_n_array_equal(to_binary(7877),to_binary(7877),13);
 }
 
 static void test_get_file_name(){
@@ -149,14 +124,53 @@ static void test_create_PNM(){
   free(image2);
 }
 
+static void test_load_write_pnm(){
+  PNM* image1= NULL;
+  PNM* image2= NULL;
+  PNM* image3= NULL;
+
+  int i = load_pnm(&image1, "scs.pbm");
+  int j = load_pnm(&image2,"totem.pgm");
+  int k = load_pnm(&image3,"antilope.ppm");
+
+  /*------------------le bon fonctionnement du load_pnm----------------------*/
+  assert_int_equal(0,i);
+  assert_int_equal(0,j);
+  assert_int_equal(0,k);
+
+  /*-------------------le bon fonctionnement du write_pnm-----------------------*/
+  int l= write_pnm(image1,"scs-copie.pbm");
+  int m= write_pnm(image2,"totem-copie.pgm");
+  int n= write_pnm(image3,"antilope-copie,pgm");
+
+  assert_int_equal(0,l);
+  assert_int_equal(0,m);
+  assert_int_equal(0,n);
+
+  /*---teste write_pnm avec un nom fichier contient des caracteres spéciaux----*/
+  int r= write_pnm(image1,"scs-cop<<ie.pbm");
+  int s= write_pnm(image2,"totem-co>>pie.pgm");
+  int t= write_pnm(image3,"an**tilope-copie.pgm");
+
+  assert_int_equal(-1,r);
+  assert_int_equal(-1,s);
+  assert_int_equal(-1,t);
+
+  free(image1);
+  free(image2);
+  free(image3);
+
+}
+
+
 static void test_fixture(){
   test_fixture_start();
-  run_tests(test_check_is_ulg_code);
-  run_tests(test_to_binary);
-  run_tests(test_get_file_name);
-  run_tests(test_fil_matrix_code);
-  run_tests(test_fil_last_matrix_bloc);
-  run_tests(test_create_PNM);
+  //run_tests(test_check_is_ulg_code); OK
+  //run_tests(test_load_write_pnm); OK
+  //run_tests(test_get_file_name);
+  //run_tests(test_fil_matrix_code);
+  //run_tests(test_fil_last_matrix_bloc);
+  //run_tests(test_create_PNM);
   test_fixture_end();
 }
 

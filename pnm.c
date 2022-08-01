@@ -291,12 +291,10 @@ if(f == NULL){
 
   if(((strcmp(get_MagicNumber(*image), P2) == 0) && get_maxPix(*image) > 255) ||
      ((strcmp(get_MagicNumber(*image), P3) == 0) && get_maxPix(*image) > 65536)){
-      free(image);
       return -3;
   }
 
   if(((*image)->Matrice = fil_matrix(image, f)) == NULL){
-    free(image);
     printf("\nle fichier est corrompus\n");
     return -3;
   }
@@ -310,8 +308,6 @@ int write_pnm(PNM *image, char* filename) {
    assert(image != NULL && filename != NULL);
 
    if(check_filename(filename) != 1){
-     free(image);
-     free(filename);
      return -1;
     }
 
