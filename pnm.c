@@ -238,15 +238,18 @@ int **fil_matrix(PNM **image, FILE *f){
  }
 
   //Vérification si la matrice ne contient pas une valeur supérieur à (*image)->maxPix
-  for(j=0; j < get_nLines(*image); j++){
-    for(k=0; k < nColumns; k++){
-      if(Matrix[j][k] > get_maxPix(*image) || Matrix[j][k] < 0){
-        printf("la matrice contient des valeur superieur a la valeur maximal !!!\n");
-        return NULL;
+  if(strcmp(get_MagicNumber(*image), "P1") != 0){
+    for(j=0; j < get_nLines(*image); j++){
+      for(k=0; k < nColumns; k++){
+        if(Matrix[j][k] > get_maxPix(*image) || Matrix[j][k] < 0){
+          printf("la matrice contient des valeur superieur a la valeur maximal !!!\n");
+          return NULL;
+        }
       }
-    }
-  }// fin vérification que les elemens de la matrice < maxPix
-
+   }
+  }
+  // fin vérification que les elemens de la matrice < maxPix
+  
   return Matrix;
 }
 
@@ -288,10 +291,12 @@ if(f == NULL){
 
   if(((strcmp(get_MagicNumber(*image), P2) == 0) && get_maxPix(*image) > 255) ||
      ((strcmp(get_MagicNumber(*image), P3) == 0) && get_maxPix(*image) > 65536)){
+      free(image);
       return -3;
   }
 
   if(((*image)->Matrice = fil_matrix(image, f)) == NULL){
+    free(image);
     printf("\nle fichier est corrompus\n");
     return -3;
   }
@@ -304,23 +309,30 @@ int write_pnm(PNM *image, char* filename) {
 
    assert(image != NULL && filename != NULL);
 
-   if(check_filename(filename) != 1)
+   if(check_filename(filename) != 1){
+     free(image);
+     free(filename);
      return -1;
+    }
 
-   FILE *f = fopen(filename, "o");
-   if(f == NULL)
+   FILE *f = fopen(filename, "w");
+   if(f == NULL){
+    free(image);
+     free(filename);
      return -2;
+   }
 
    fprintf(f, "%s\n",get_MagicNumber(image));
 
    fprintf(f, "%u %u\n",get_nColumns(image), get_nLines(image));
 
-   if(strcmp(get_MagicNumber(image), P2) == 0 || strcmp(get_MagicNumber(image), P3) == 0)
+   if(strcmp(get_MagicNumber(image), P2) == 0 || strcmp(get_MagicNumber(image), P3) == 0){
         fprintf(f, "%u\n",get_maxPix(image));
+   }
 
-   if(strcmp(get_MagicNumber(image), P3) == 0)
+   if(strcmp(get_MagicNumber(image), P3) == 0){
      set_nColumns(image, get_nColumns(image)* 3);
-
+   }
    for(int i=0; i< get_nLines(image); i++){
      for(int j=0; j< get_nColumns(image); j++){
        fprintf(f, "%d ",image->Matrice[i][j]);
@@ -340,7 +352,7 @@ void display_help(void){
    printf("\t -i : pour indiquer le fichier input \n");
    printf("\t -o : pour indiquer le fichier output \n\n");
    printf("\t---------------------------------------------------------------------------------\n");
- }
+}
 
 void display_succes(void){
   printf("\n\t--------------------------------------------------------------------------\n\n");
@@ -349,6 +361,14 @@ void display_succes(void){
   printf("\tle fichier input est bien lu..........................................SUCCES \n");
   printf("\tle traitement est terminer............................................SUCCES \n\n");
   printf("\t------------------VOTRE FICHIER EST DISPONIBLE-------------------------------\n");
+}
+
+char *name_file(char* path){
+  assert(path != NULL);
+  int length = strlen(path);
+  while(length >= 0 && path[length] != '/')
+      length--;
+  return path+length+1;
 }
 
 void free_image(PNM* image){

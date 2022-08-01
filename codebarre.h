@@ -28,12 +28,15 @@
  *
  */
 #define DIMESION 70 //!<Macro DIMENSION pour les demensions de la matrice
+#define SIZE 10000
 
-
+void fil_bloc_down_right(int **Matrix);
+int fix_bar_code(char* barcode_to_fixe,char* barcode_fixed);
+int check_column_parity(int **matrix, int column_index, int matrix_dimension);
+int check_line_parity(int **matrix, int line_index, int matrix_dimension);
+char *name_file(char* path);
+char *generate_file_name(char *code);
 int generate_code_barre(char *input_file, char* output_folder);
-char* generate_file_name(char *code);
-
-
 
 //------------------------------------------------------------------------------
 /**

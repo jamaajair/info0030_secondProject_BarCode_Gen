@@ -273,4 +273,5 @@ void free_image(PNM* image);
  *\param image: le procedure prends void pour indiquer que "pas d'args"
  */
 
+char *name_file(char* path);
 #endif // __PNM__
