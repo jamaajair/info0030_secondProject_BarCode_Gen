@@ -1,11 +1,18 @@
+/**************************************************************************************************
+ *                                                                                                *
+ *          LES TESTS UNITAIRES UTILISE LES IMAGES FOURNIT DANS LE PROJET 1                       * 
+ *                                                                                                *
+ * ************************************************************************************************/
+
+
 /**
  * \file codebarre_test.c
  *
  * \brief INFO0030 Projet 2 - Code Barre
  * \author Jamaa JAIR s207171
  * \version 0.1
- * \date 29/03/2022
- *
+ * \date 29/07/2022
+ * 
  * Ce fichier contient les tests unitaires du fichier codebarre.c
  *  et les prototypes des fonctions pour coder les matricules des étudiants de l'ULG.
  */
@@ -21,20 +28,6 @@ static void test_check_is_ulg_code(){
   assert_int_equal(-1,check_is_ulg_code("00000000"));
   assert_int_equal(-1,check_is_ulg_code("ULG FACSA"));
   assert_int_equal(-1,check_is_ulg_code("INFO0030"));
-}
-
-static int compare_two_table(int *A, int *B, int size){
-  assert(A != NULL && B != NULL && size>0);
-
-  /*--------------------- Comparer les deux tableau valeur par valeur -----------------------*/
-  int i = 0;
-  while (i != (size-1) && A[i]==B[i]) {
-    i++;
-  }//fin while
-
-  if(i == size-1)
-    return 1;
-  return -1;
 }
 
 static int compare_two_Matrix(int **A, int **B, int dimension){
@@ -65,8 +58,7 @@ static void test_get_file_name(){
   assert_string_equal("","");
   assert_string_equal(get_file_name(""),get_file_name(""));
   assert_string_equal("codebarre.txt",get_file_name("/home/student/Bureau/barre/codebarre.txt"));
-  assert_int_equal(-1, compare_two_string("toto.txt", "titi.txt"));
-  assert_int_equal(1, compare_two_string(get_file_name("/home/student/Bureau/barre/codebarre.txt"), "code.txt"));
+  assert_int_equal(-52, strcmp("code.txt",get_file_name("/home/student/Bureau/barre/codebarre.txt")));
 }
 
 static void test_fil_matrix_code(){
@@ -100,6 +92,7 @@ static void test_create_PNM(){
   PNM* image1=malloc(sizeof(PNM*));
   if(image1 == NULL)
     abort();
+  
   char magiqueNumber[4] = P1;
   set_nLines(image1, DIMESION);
   set_nColumns(image1, DIMESION);
@@ -162,15 +155,39 @@ static void test_load_write_pnm(){
 
 }
 
+static void test_generate_correcte_code_barre(){
+  int a = generate_code_barre("MyUlgCode.txt",".");
+  int b = fix_bar_code("20207171.pbm","20207171correct.pbm");
+
+  assert_int_equal(1, a);
+  assert_int_equal(0, b);
+
+  PNM* code = NULL;
+  PNM* correctedCode = NULL;
+
+  load_pnm(&code,"20207171.pbm");
+  load_pnm(&correctedCode, "20207171correct.pbm");
+
+  assert_int_equal(get_nLines(code), get_nLines(correctedCode));
+  assert_int_equal(get_nColumns(code), get_nColumns(correctedCode));
+  assert_string_equal(get_MagicNumber(code), get_MagicNumber(correctedCode));
+  assert_int_equal(1, compare_two_Matrix(get_matrix(code), get_matrix(correctedCode), get_nLines(code)));
+
+  free(code);
+  free(correctedCode);
+}
 
 static void test_fixture(){
   test_fixture_start();
-  //run_tests(test_check_is_ulg_code); OK
-  //run_tests(test_load_write_pnm); OK
-  //run_tests(test_get_file_name);
-  //run_tests(test_fil_matrix_code);
-  //run_tests(test_fil_last_matrix_bloc);
-  //run_tests(test_create_PNM);
+
+  run_tests(test_check_is_ulg_code);
+  run_tests(test_load_write_pnm);
+  run_tests(test_get_file_name);
+  run_tests(test_generate_correcte_code_barre);
+  run_tests(test_fil_matrix_code);
+  run_tests(test_fil_last_matrix_bloc);
+  run_tests(test_create_PNM);
+
   test_fixture_end();
 }
 

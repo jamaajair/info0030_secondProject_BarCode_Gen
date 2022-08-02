@@ -1,5 +1,13 @@
-
-
+/**
+ * \file main.c
+ *
+ * \brief INFO0030 Projet 2 - Code Barre
+ * \author Jamaa JAIR s207171
+ * \version 0.1
+ * \date 29/07/2022
+ *
+ * Ce fichier est le main
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -53,22 +61,23 @@ int main(int argc, char *argv[]) {
   }
 
   if(manqueOption != 1){
-    if(to_generate){
-      strcpy(file,get_file_name(file));
-      if(generate_code_barre(file, folder) == 1)
-        printf("\n\t***la generation des codes barres a ete bien effectué..........................100%%\n\n");
+    if(to_generate && !to_correct){
+      // le file contient un chemin soit abs ou rela vers le fichier des matricules
+      if(generate_code_barre(file, folder))
+        printf("\n\t*** la generation des codes barres a ete bien effectue..........................100%%\n\n");
       else
-        printf("\n\t***la generation des codes barres est echoué.................................0%%\n\n");
+        printf("\n\t*** la generation des codes barres est echoue.................................0%%\n\n");
       to_generate=0;
     }
 
     if(to_correct){
+      //Pour la correction il faut que le code a corrige se trouve dans le meme endroit que les fichier du code C
       strcpy(file,get_file_name(file_fixed));
       int test = fix_bar_code(file, folder);
-      if(test == 0)
-        printf("\n\t***le fichier à été bien corrigé.................................................100%%\n\n");
+      if(!test)
+        printf("\n\t*** le fichier a ete bien corrige.................................................100%%\n\n");
       else
-        printf("\n\t***la correction du fichier est échoué.....................................................0%%\n\n");
+        printf("\n\t*** la correction du fichier est echoue.....................................................0%%\n\n");
       to_correct=0;
     }
   return 0;

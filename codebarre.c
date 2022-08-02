@@ -4,7 +4,7 @@
  * \brief INFO0030 Projet 2 - Code Barre
  * \author Jamaa JAIR s207171
  * \version 0.1
- * \date 29/03/2022
+ * \date 29/07/2022
  *
  * Ce fichier contient les implémentations
  *  et les prototypes des fonctions pour coder les matricules des étudiants de l'ULG.
@@ -85,7 +85,7 @@ int generate_code_barre(char *input_file, char* output_folder){
       ce qui ne nous permet pas de faire un bonne detection d'un fichier mal forme */
 
     if(fgets(code, SIZE,file )){
-      if (check_is_ulg_code(code) != 1){
+      if (!check_is_ulg_code(code)){
         printf("\nle fichier est mal formé !!\n");
         return 0;
       }
@@ -119,7 +119,7 @@ int generate_code_barre(char *input_file, char* output_folder){
       strcat(strcat(path, "/"), codeName);
 
       //if(chdir("output_folder") == 0){
-        if(write_pnm(image, codeName) != 0){
+        if(write_pnm(image, codeName)){
           printf("\n\nERREUR: dans le Sauvegarde de l'image %d \n", write_pnm(image, output_folder));
           fclose(file);
           free(codeName);
@@ -139,8 +139,8 @@ int fix_bar_code(char* barcode_to_fixe,char* barcode_fixed){
 
   //chargé en mémoire l'image a corriger
   PNM* barcode;
-  if(load_pnm(&barcode, barcode_to_fixe) != 0){
-    printf("\n\nerreur dans le téléchargement de l'image à corriger\n");
+  if(load_pnm(&barcode, barcode_to_fixe)){
+    printf("\n\nerreur dans la téléchargement de l'image à corriger\n");
     free(barcode);
     return -1;
   }// fin if
@@ -194,7 +194,7 @@ int fix_bar_code(char* barcode_to_fixe,char* barcode_fixed){
 
   for (int i = 0; i < (get_nLines(barcode)/10); i++)
   {
-    if(check_line_parity(matrix, i, get_nLines(barcode)/10) != 1){
+    if(!(check_line_parity(matrix, i, get_nLines(barcode)/10))){
       good_line = 0;
       bad_line = i;
     }else{
@@ -205,29 +205,25 @@ int fix_bar_code(char* barcode_to_fixe,char* barcode_fixed){
     // testing la partie inf droite
     for (int j = 0; j < (get_nLines(barcode)/10); j++)
     {
-      if(check_column_parity(matrix, j, (get_nLines(barcode)/10)) != 1){
+      if(!(check_column_parity(matrix, j, (get_nLines(barcode)/10)))){
         good_column = 0;
         bad_column = j;
+        //correction, j inverse dans le cas ou la ligne i et la colonne j ont une mauvise parité
       }else{
         good_column = 1;
         bad_column = 0;
       }// fin test de parite de la colonne j
-
-      //correction, j inverse dans le cas ou la ligne i et la colonne j ont une mauvise parité
-      if(check_line_parity(matrix, i, get_nLines(barcode)/10) != 1 && check_column_parity(matrix, j, (get_nLines(barcode)/10)) != 1){
-        matrix[i][j] = 1-matrix[i][j];
-      }// fin correction
     }
       
   }
 
   //colonne est bonne mais la ligne est mauvaise 
-    if(good_column == 1 && good_line == 0){
+    if(good_column && !good_line){
       matrix[bad_line][(get_nLines(barcode)/10)-1] = 1 - matrix[bad_line][(get_nLines(barcode)/10)-1];
     }// fin if
 
     //ligne est bonne mais la colonne non
-    if(good_line == 1 && good_column == 0){
+    if(good_line && !good_column){
       matrix[(get_nLines(barcode)/10)-1][bad_column] = 1 - matrix[(get_nLines(barcode)/10)-1][bad_column];
     }// fin if 
     
@@ -243,7 +239,7 @@ int fix_bar_code(char* barcode_to_fixe,char* barcode_fixed){
   
     /* le pixel en bas a droite le cas ou la ligne est bonne ainsi la colonne mais la parité en 
      bas a droite est mauvais */
-    if(good_line == 1 && good_column == 1 && (line_sum % 2) != 0 && (column_sum % 2) != 0)
+    if(good_line && good_column && !(line_sum % 2) && !(column_sum % 2))
       matrix[get_nLines(barcode)-1][get_nColumns(barcode)-1] = 1 -  matrix[get_nLines(barcode)-1][get_nColumns(barcode)-1];
     
     // testing que la matrice est bien corrigee 
@@ -282,15 +278,9 @@ int fix_bar_code(char* barcode_to_fixe,char* barcode_fixed){
       free(matrix[i]);
     }
     free(matrix); // fin 
-
-    // libere la matrice InputfileMatrix
-    for(int i=0; i<get_nColumns(barcode); i++){
-      free(InputFileMatrix[i]);
-    }
-    free(InputFileMatrix); // fin
      
-    int result = write_pnm(barcode, barcode_fixed); // generer le fichier corrigé 
-    //free_image(barcode); // libere le codebarre
+    int result = write_pnm(barcode, barcode_fixed); // generer le fichier corrigé
+    free_image(barcode); // libere le codebarre
   return result;
 } // fin de la fonction de la correction
 
