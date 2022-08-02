@@ -27,9 +27,9 @@ int main(int argc, char *argv[]) {
    char *optstring = ":f:i:o:c:h";
    char file[MAX_SIZE];
    char folder[MAX_SIZE];
-   char file_fixed[MAX_SIZE];
+   char fileFixed[MAX_SIZE];
    int value, manqueOption = 0;
-   int to_correct = 0, to_generate = 0;
+   int toCorrect = 0, toGenerate = 0;
 
    if(argc != 5){
      printf("commande non valide !!\n");
@@ -43,11 +43,11 @@ int main(int argc, char *argv[]) {
         break;
       case 'o':
         strcpy(folder, optarg);
-        to_generate = 1;
+        toGenerate = 1;
         break;
       case 'c':
-        strcpy(file_fixed, optarg);
-        to_correct = 1;
+        strcpy(fileFixed, optarg);
+        toCorrect = 1;
         break;
       case '?':
         printf("option inconnu !!");
@@ -61,24 +61,24 @@ int main(int argc, char *argv[]) {
   }
 
   if(manqueOption != 1){
-    if(to_generate && !to_correct){
+    if(toGenerate && !toCorrect){
       // le file contient un chemin soit abs ou rela vers le fichier des matricules
       if(generate_code_barre(file, folder))
         printf("\n\t*** la generation des codes barres a ete bien effectue..........................100%%\n\n");
       else
         printf("\n\t*** la generation des codes barres est echoue.................................0%%\n\n");
-      to_generate=0;
+      toGenerate=0;
     }
 
-    if(to_correct){
+    if(toCorrect){
       //Pour la correction il faut que le code a corrige se trouve dans le meme endroit que les fichier du code C
-      strcpy(file,get_file_name(file_fixed));
+      strcpy(file,get_file_name(fileFixed));
       int test = fix_bar_code(file, folder);
       if(!test)
         printf("\n\t*** le fichier a ete bien corrige.................................................100%%\n\n");
       else
         printf("\n\t*** la correction du fichier est echoue.....................................................0%%\n\n");
-      to_correct=0;
+      toCorrect=0;
     }
   return 0;
   }

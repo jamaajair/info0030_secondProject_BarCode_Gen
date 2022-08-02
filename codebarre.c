@@ -1,3 +1,11 @@
+/**************************************************************************************************
+ *                                        - NOTE -                                                *
+ *          Certains compteurs boucles sont declarees à l'exterieur des boucle car je             *
+ *          les utilise apres les boucles, je ne veux qui'ils seront justes des variables         *
+ *          locales des boucles, mais des variables locales de la fct/procedure                   * 
+ *                                                                                                *
+ * ************************************************************************************************/
+
 /**
  * \file codebarre.c
  *
@@ -67,10 +75,10 @@ int check_is_ulg_code(char* regestrationNumber){
   return 1;
 }// fin verification 
 
-int generate_code_barre(char *input_file, char* output_folder){
-  assert(input_file != NULL && output_folder != NULL);
+int generate_code_barre(char *InputFile, char* OutPutFolder){
+  assert(InputFile != NULL && OutPutFolder != NULL);
 
-  FILE *file = fopen(input_file, "r"); // ouvrir le fichier en mode lecture
+  FILE *file = fopen(InputFile, "r"); // ouvrir le fichier en mode lecture
 
   if(file == NULL){
     return -1;
@@ -112,18 +120,18 @@ int generate_code_barre(char *input_file, char* output_folder){
       }
 
       //genere l endroit ou l'image va etre enregistrer
-      char path[SIZE];
-      strcpy(path, output_folder);
+      char path[SIZE] = "";
+      strcpy(path, OutPutFolder);
       codeName = generate_file_name(code);
       
       strcat(strcat(path, "/"), codeName);
 
-      //if(chdir("output_folder") == 0){
+      //if(chdir("OutPutFolder") == 0){
         if(write_pnm(image, codeName)){
-          printf("\n\nERREUR: dans le Sauvegarde de l'image %d \n", write_pnm(image, output_folder));
+          printf("\n\nERREUR: dans le Sauvegarde de l'image %d \n", write_pnm(image, OutPutFolder));
           fclose(file);
           free(codeName);
-          free(output_folder);
+          free(OutPutFolder);
           free_image(image);
           return 0;
         }
@@ -134,12 +142,12 @@ int generate_code_barre(char *input_file, char* output_folder){
   return 1;
 }// fin la generation des codes barres (PBM)
 
-int fix_bar_code(char* barcode_to_fixe,char* barcode_fixed){
-  assert(barcode_to_fixe != NULL && barcode_fixed != NULL);
+int fix_bar_code(char* barCodeToFix,char* barcodeFixed){
+  assert(barCodeToFix != NULL && barcodeFixed != NULL);
 
   //chargé en mémoire l'image a corriger
-  PNM* barcode;
-  if(load_pnm(&barcode, barcode_to_fixe)){
+  PNM* barcode = NULL;
+  if(load_pnm(&barcode, barCodeToFix)){
     printf("\n\nerreur dans la téléchargement de l'image à corriger\n");
     free(barcode);
     return -1;
@@ -189,57 +197,57 @@ int fix_bar_code(char* barcode_to_fixe,char* barcode_fixed){
   }// fin for i
   
   // la correction de la matrice 
-  int good_line, bad_line;
-  int good_column, bad_column;
+  int goodLine=-1, badLine=-1;
+  int goodColumn=-1, badColumn=-1;
 
   for (int i = 0; i < (get_nLines(barcode)/10); i++)
   {
     if(!(check_line_parity(matrix, i, get_nLines(barcode)/10))){
-      good_line = 0;
-      bad_line = i;
+      goodLine = 0;
+      badLine = i;
     }else{
-      good_line = 1;
-      bad_line = 0;
+      goodLine = 1;
+      badLine = 0;
     } // fin test la parite de la ligne i
 
     // testing la partie inf droite
     for (int j = 0; j < (get_nLines(barcode)/10); j++)
     {
       if(!(check_column_parity(matrix, j, (get_nLines(barcode)/10)))){
-        good_column = 0;
-        bad_column = j;
+        goodColumn = 0;
+        badColumn = j;
         //correction, j inverse dans le cas ou la ligne i et la colonne j ont une mauvise parité
       }else{
-        good_column = 1;
-        bad_column = 0;
+        goodColumn = 1;
+        badColumn = 0;
       }// fin test de parite de la colonne j
     }
       
   }
 
   //colonne est bonne mais la ligne est mauvaise 
-    if(good_column && !good_line){
-      matrix[bad_line][(get_nLines(barcode)/10)-1] = 1 - matrix[bad_line][(get_nLines(barcode)/10)-1];
+    if(goodColumn && !goodLine){
+      matrix[badLine][(get_nLines(barcode)/10)-1] = 1 - matrix[badLine][(get_nLines(barcode)/10)-1];
     }// fin if
 
     //ligne est bonne mais la colonne non
-    if(good_line && !good_column){
-      matrix[(get_nLines(barcode)/10)-1][bad_column] = 1 - matrix[(get_nLines(barcode)/10)-1][bad_column];
+    if(goodLine && !goodColumn){
+      matrix[(get_nLines(barcode)/10)-1][badColumn] = 1 - matrix[(get_nLines(barcode)/10)-1][badColumn];
     }// fin if 
     
     //regardons la partie en bas droite
-    int line_sum = 0;
-    int column_sum = 0;
+    int sumOfLine = 0;
+    int sumOfColumn = 0;
 
     for (int i = 0; i < get_nLines(barcode)/10; i++)
     {
-      line_sum += matrix[i][(get_nLines(barcode)/10)-1]; // somme de la ligne en bas
-      column_sum += matrix[(get_nLines(barcode)/10)-1][i]; // somme de la colonne a droite
+      sumOfLine += matrix[i][(get_nLines(barcode)/10)-1]; // somme de la ligne en bas
+      sumOfColumn += matrix[(get_nLines(barcode)/10)-1][i]; // somme de la colonne a droite
     }
   
     /* le pixel en bas a droite le cas ou la ligne est bonne ainsi la colonne mais la parité en 
      bas a droite est mauvais */
-    if(good_line && good_column && !(line_sum % 2) && !(column_sum % 2))
+    if(goodLine && goodColumn && !(sumOfLine % 2) && !(sumOfColumn % 2))
       matrix[get_nLines(barcode)-1][get_nColumns(barcode)-1] = 1 -  matrix[get_nLines(barcode)-1][get_nColumns(barcode)-1];
     
     // testing que la matrice est bien corrigee 
@@ -279,28 +287,28 @@ int fix_bar_code(char* barcode_to_fixe,char* barcode_fixed){
     }
     free(matrix); // fin 
      
-    int result = write_pnm(barcode, barcode_fixed); // generer le fichier corrigé
+    int result = write_pnm(barcode, barcodeFixed); // generer le fichier corrigé
     free_image(barcode); // libere le codebarre
   return result;
 } // fin de la fonction de la correction
 
-int check_line_parity(int **matrix, int line_index, int matrix_dimension){
-  assert(matrix != NULL && line_index >= 0 && matrix_dimension > 0);
+int check_line_parity(int **matrix, int indexOfLine, int dimensionOfMatrix){
+  assert(matrix != NULL && indexOfLine >= 0 && dimensionOfMatrix > 0);
   
   int sum = 0;
-  for(int i=0; i<matrix_dimension-1; i++){
-    sum += matrix[line_index][i];
+  for(int i=0; i<dimensionOfMatrix-1; i++){
+    sum += matrix[indexOfLine][i];
   }// fin for i
 
   return ((sum%2) == 0);
 }// fin check_line_parity
 
-int check_column_parity(int **matrix, int column_index, int matrix_dimension){
-  assert(matrix != NULL && column_index >= 0 && matrix_dimension > 0);
+int check_column_parity(int **matrix, int indexOfColumn, int dimensionOfMatrix){
+  assert(matrix != NULL && indexOfColumn >= 0 && dimensionOfMatrix > 0);
   
   int sum = 0;
-  for(int i=0; i<matrix_dimension-1; i++){
-    sum += matrix[i][column_index];
+  for(int i=0; i<dimensionOfMatrix-1; i++){
+    sum += matrix[i][indexOfColumn];
   }// fin for i
 
   return ((sum%2) == 0);
@@ -449,17 +457,17 @@ void fil_bloc_down_right(int **Matrix){
   assert(Matrix != NULL);
 
   //getting parity of last column and last line
-  int sum_column = 0;
-  int sum_line = 0;
+  int sumOfColumn = 0;
+  int sumOfLine= 0;
   for (int i = 0; i < DIMESION-10; i+=10)
   {
-    sum_column += Matrix[i][DIMESION-10];
-    sum_line += Matrix[DIMESION-10][i];
+    sumOfColumn += Matrix[i][DIMESION-10];
+    sumOfLine+= Matrix[DIMESION-10][i];
   }// fin for i
 
   /* Remplissage bu bloc en bas a droite pas besoin de remplir le 
    cas de 0 cas la matrice est deja contient des 0 de bas */
-  if(sum_column%2 != 0 && sum_line != 0){
+  if(sumOfColumn%2 != 0 && sumOfLine!= 0){
     for (int i = DIMESION-10; i < DIMESION; i++)
     {
       for (int j = DIMESION-10; j < DIMESION; j++)
