@@ -85,4 +85,4 @@ make test
 ## Author
 
 **Jamaa Jair** — [LinkedIn](https://linkedin.com/in/jamaa-jair-286656137/)
-University of Liège · B.Sc. Computer Science · 2022–2025
+University of Liège · B.Sc. Computer Science · 2020–2024
